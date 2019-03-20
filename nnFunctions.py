@@ -59,6 +59,7 @@ def sigmoid(z):
     Notice that z can be a scalar, a vector or a matrix
     return the sigmoid of input z (same dimensions as z)
     '''
+    #i change here
     # your code here - remove the next four lines
     if np.isscalar(z):
         s = 0
