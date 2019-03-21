@@ -59,12 +59,20 @@ def sigmoid(z):
     Notice that z can be a scalar, a vector or a matrix
     return the sigmoid of input z (same dimensions as z)
     '''
-    #i change here
+
     # your code here - remove the next four lines
+
     if np.isscalar(z):
-        s = 0
+        s = 1/(1+np.exp(-z))
+        print(s)
+        print(np.e)
     else:
-        s = np.zeros(z.shape)
+
+        a = np.power(np.e, np.negative(z))
+        d = 1 + a
+        s = 1/d
+        print(s)
+
     return s
 
 def nnObjFunction(params, *args):
