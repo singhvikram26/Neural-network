@@ -71,7 +71,7 @@ def sigmoid(z):
         a = np.power(np.e, np.negative(z))
         d = 1 + a
         s = 1/d
-        print(s)
+
 
     return s
 
@@ -114,6 +114,47 @@ def nnObjFunction(params, *args):
     # Your code here
     #
     #
+    x = np.ones((1,train_data.shape[0]))
+
+    train_data= np.concatenate(( train_data,x.T),axis=1)
+    a= np.matmul(train_data, W1.T)
+    z= sigmoid(a)
+    z= np.concatenate((z,x.T),axis=1)
+    b= np.matmul(z,W2.T)
+    o= sigmoid(b)
+    #Backpropogation
+
+     #1 of k coding
+    Y= np.zeros((train_label.shape[0],10))
+    Y[range(0,train_label.shape[0]),(train_label.T[0])]=1
+    ##########
+    #error calculation
+    r= 1- o
+    p= np.log(o)
+
+
+    Ji=np.multiply(Y,p) + np.multiply((1-Y),np.log(r))
+    Ji= Ji.flatten()
+    J=np.add.reduce(Ji)
+    print(J)
+    #gradient w.r.t weights
+    q= o-Y
+    Jw1= np.matmul(q.T,z)
+    print(Jw1.shape)
+    t=1-z
+    #Z= z[0:(z.shape[1]-1)*()].reshape((z.shape[0],z.shape[1]-1))
+    print()
+    Z= np.delete(z,n_hidden , 1)
+    print(Z.shape)
+    w2= np.delete(W2,n_hidden,1)
+    r= np.multiply(1-Z, Z)
+    v= np.matmul(o-Y, w2)
+
+    u= np.multiply(r,v)
+
+    Jw1= np.matmul(u.T,train_data)
+
+
     #
     #
     #
