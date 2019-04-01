@@ -144,7 +144,31 @@ def nnPredict(W1, W2, data):
     % label: a column vector of predicted labels
     '''
 
-    labels = np.zeros((data.shape[0],))
+    numberOfInputs = data.shape[0]
+    result = np.zeros(numberOfInputs)
+    
+    numberOfHidden = W1.shape[0]
+    hidden = np.ones(numberOfHidden+1)
+    
+    numberOfOutput = W2.shape[0]
+    output = np.zeros(numberOfOutput)
+   
+    #add the bias column to the input data
+    biasColumn = np.ones((len(data),1))
+    newData = np.hstack((data, biasColumn))
+
+    for j in range(numberOfInputs):
+      for p in range(W1.shape[0]):
+        W1T = np.transpose(W1[p])
+        hidden[p] =  np.dot(W1T, newData[j])
+        hidden[p] = (1/(1+exp(-hidden[p])))
+      for l in range(10):
+        W2T = np.transpose(W2[l])
+        output[l] = np.dot(W2T, hidden)
+        output[l] = (1/(1+exp(-output[l])))
+        result[j] = np.argmax(output)	    	
+    
+    
     # Your code here
 
-    return labels
+    return result
