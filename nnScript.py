@@ -3,7 +3,7 @@ Neural Network Script Starts here
 '''
 from nnFunctions import *
 # you may experiment with a small data set (mnist_sample.pickle) first
-filename = 'mnist_all.pickle'
+filename = 'mnist_sample.pickle'
 #filename = 'AI_quick_draw.pickle'
 train_data, train_label, test_data, test_label = preprocess(filename)
 #print("shape of train data", train_data.shape)
@@ -27,7 +27,7 @@ initial_W2 = initializeWeights(n_hidden, n_class)
 initialWeights = np.concatenate((initial_W1.flatten(), initial_W2.flatten()), 0)
 
 # set the regularization hyper-parameter
-lambdaval = 0
+lambdaval = 1
 
 args = (n_input, n_hidden, n_class, train_data, train_label, lambdaval)
 
@@ -44,6 +44,7 @@ print("training done!")
 # Test the computed parameters
 
 # find the accuracy on Training Dataset
+
 predicted_label = nnPredict(W1, W2, train_data)
 print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label == train_label).astype(float))) + '%')
 

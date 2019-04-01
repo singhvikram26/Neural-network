@@ -124,8 +124,8 @@ def nnObjFunction(params, *args):
     o= sigmoid(b)
     #Backpropogation
 
-     #1 of k coding
-    Y= np.zeros((train_label.shape[0],10))
+    #1 of k coding
+    Y= np.zeros((train_label.shape[0],n_class))
     Y[range(0,train_label.shape[0]),(train_label)]=1
     ###############
 
@@ -133,43 +133,52 @@ def nnObjFunction(params, *args):
     r= 1- o
     p= np.log(o)
 
-    print("Shape of Y",Y.shape)
-    print("Shape of p",p.shape)
+
     Ji=np.matmul(Y.T,p) + np.matmul((1-Y).T,np.log(r))
     Ji= Ji.flatten()
     J=-(np.add.reduce(Ji)/ Ji.size)
-    ################
 
-    #calculating J regularize
-    #k= np.add.reduce(params**2)
-    #J_reg=J + ((lambdaval/(2*params.size))*k)
+    #### regularize J #####
+
+    J+= (lambdaval/(2*train_data.shape[0])) * (np.sum(W1**2) + (np.sum(W2**2)))
+
+    obj_val= J
+
+
     #########################
 
-    #print("bata m",J)
+
     #gradient w.r.t weights
     q= o-Y
     grad_W2= np.matmul(q.T,z)
-    print("shape of grdient w.r.t W2",grad_W2.shape)
 
-    #Z= z[0:(z.shape[1]-1)*()].reshape((z.shape[0],z.shape[1]-1))
-    print()
+    ###########regularize
+
+    grad_W2= (grad_W2 + lambdaval*W2)/train_data.shape[0]
+
+
+    ##############Gradienec W1
+
     Z= np.delete(z,n_hidden , 1)
-    #print("----",Z.shape)
     w2= np.delete(W2,n_hidden,1)
-    r= np.matmul((1-Z).T, Z)
+    r= np.multiply((1-Z), Z)
     v= np.matmul(o-Y, w2)
 
-    u= np.matmul(v.T,train_data)
 
-    grad_W1= np.matmul(r,u)
-    print("Shape of gradient w.r.t W1",grad_W1.shape)
+    u= np.multiply(r,v)
+    grad_W1= np.matmul(u.T,train_data)
+
+    #############regularize  grad_W1
+
+    grad_W1= (grad_W1 + lambdaval*W1)/train_data.shape[0]
+
+
+
+
     obj_grad = np.concatenate((grad_W1.flatten(), grad_W2.flatten()),0)
     ##########################
-    g= np.add.reduce(obj_grad)
-    grad= g/obj_grad.size
-
-
-    print(obj_grad.size)
+    ##g= np.add.reduce(obj_grad)
+    ##grad= g/obj_grad.size
 
     #params= params - 0.1*grad
 
@@ -191,7 +200,7 @@ def nnObjFunction(params, *args):
     # your gradient matrices are grad_W1 and grad_W2
     # you would use code similar to the one below to create a flat array
     # obj_grad = np.concatenate((grad_W1.flatten(), grad_W2.flatten()),0)
-    obj_grad = np.zeros(params.shape)
+
 
     return (obj_val, obj_grad)
 
@@ -214,4 +223,19 @@ def nnPredict(W1, W2, data):
     labels = np.zeros((data.shape[0],))
     # Your code here
 
-    return labels
+    x = np.ones((1,data.shape[0]))
+
+    train_data= np.concatenate((data,x.T),axis=1)
+    a= np.matmul(train_data, W1.T)
+    z= sigmoid(a)
+    z= np.concatenate((z,x.T),axis=1)
+    b= np.matmul(z,W2.T)
+    labels= sigmoid(b)
+    lab= np.ones((labels.shape[0],))
+    for i in range(0,labels.shape[0]):
+        lab[i]= np.nanargmax(labels[i])
+
+    #print("---",labels[0])
+    #print(np.argmax(labels[0]))
+
+    return lab
