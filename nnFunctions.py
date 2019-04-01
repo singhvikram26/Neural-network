@@ -126,33 +126,59 @@ def nnObjFunction(params, *args):
 
      #1 of k coding
     Y= np.zeros((train_label.shape[0],10))
-    Y[range(0,train_label.shape[0]),(train_label.T[0])]=1
-    ##########
+    Y[range(0,train_label.shape[0]),(train_label)]=1
+    ###############
+
     #error calculation
     r= 1- o
     p= np.log(o)
 
-
-    Ji=np.multiply(Y,p) + np.multiply((1-Y),np.log(r))
+    print("Shape of Y",Y.shape)
+    print("Shape of p",p.shape)
+    Ji=np.matmul(Y.T,p) + np.matmul((1-Y).T,np.log(r))
     Ji= Ji.flatten()
-    J=np.add.reduce(Ji)
-    print(J)
+    J=-(np.add.reduce(Ji)/ Ji.size)
+    ################
+
+    #calculating J regularize
+    #k= np.add.reduce(params**2)
+    #J_reg=J + ((lambdaval/(2*params.size))*k)
+    #########################
+
+    #print("bata m",J)
     #gradient w.r.t weights
     q= o-Y
-    Jw1= np.matmul(q.T,z)
-    print(Jw1.shape)
-    t=1-z
+    grad_W2= np.matmul(q.T,z)
+    print("shape of grdient w.r.t W2",grad_W2.shape)
+
     #Z= z[0:(z.shape[1]-1)*()].reshape((z.shape[0],z.shape[1]-1))
     print()
     Z= np.delete(z,n_hidden , 1)
-    print(Z.shape)
+    #print("----",Z.shape)
     w2= np.delete(W2,n_hidden,1)
-    r= np.multiply(1-Z, Z)
+    r= np.matmul((1-Z).T, Z)
     v= np.matmul(o-Y, w2)
 
-    u= np.multiply(r,v)
+    u= np.matmul(v.T,train_data)
 
-    Jw1= np.matmul(u.T,train_data)
+    grad_W1= np.matmul(r,u)
+    print("Shape of gradient w.r.t W1",grad_W1.shape)
+    obj_grad = np.concatenate((grad_W1.flatten(), grad_W2.flatten()),0)
+    ##########################
+    g= np.add.reduce(obj_grad)
+    grad= g/obj_grad.size
+
+
+    print(obj_grad.size)
+
+    #params= params - 0.1*grad
+
+    #k= np.add.reduce(params**2)
+
+    #Jr= J + ((lambdaval/(2*params.size))*k)
+
+
+
 
 
     #
