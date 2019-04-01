@@ -3,11 +3,11 @@ Neural Network Script Starts here
 '''
 from nnFunctions import *
 # you may experiment with a small data set (mnist_sample.pickle) first
-filename = 'mnist_sample.pickle'
+filename = 'mnist_all.pickle'
 #filename = 'AI_quick_draw.pickle'
 train_data, train_label, test_data, test_label = preprocess(filename)
-print("shape of train data", train_data.shape)
-print("shape of train label ", train_label.shape)
+#print("shape of train data", train_data.shape)
+#print("shape of train label ", train_label.shape)
 #  Train Neural Network
 # set the number of nodes in input unit (not including bias unit)
 n_input = train_data.shape[1]
@@ -20,9 +20,9 @@ n_class = 10
 
 # initialize the weights into some random matrices
 initial_W1 = initializeWeights(n_input, n_hidden)
-print(initial_W1.shape)
+#print(initial_W1.shape)
 initial_W2 = initializeWeights(n_hidden, n_class)
-print(initial_W2.shape)
+#print(initial_W2.shape)
 # unroll 2 weight matrices into single column vector
 initialWeights = np.concatenate((initial_W1.flatten(), initial_W2.flatten()), 0)
 
